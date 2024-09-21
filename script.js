@@ -5,6 +5,7 @@ let currentWeapon = 0;
 let fighting;
 let monsterHealth;
 let inventory = ["stick"];
+let weaponCost = 30;
 
 const button1 = document.querySelector('#button1');
 const button2 = document.querySelector("#button2");
@@ -20,7 +21,8 @@ const weapons = [
   { name: 'stick', power: 5 },
   { name: 'dagger', power: 30 },
   { name: 'claw hammer', power: 50 },
-  { name: 'sword', power: 100 }
+  { name: 'sword', power: 100 },
+  { name: 'fang chain', power: 150}
 ];
 const monsters = [
   {
@@ -39,6 +41,7 @@ const monsters = [
     health: 300
   }
 ]
+let buyWeaponText = "Buy a " + weapons[currentWeapon + 1].name + " (" + weaponCost + " gold)";
 const locations = [
   {
     name: "town square",
@@ -48,7 +51,7 @@ const locations = [
   },
   {
     name: "store",
-    "button text": ["Buy 10 health (10 gold)", "Buy weapon (30 gold)", "Go to town square"],
+    "button text": ["Buy 10 health (10 gold)", buyWeaponText, "Go to town square"],
     "button functions": [buyHealth, buyWeapon, goTown],
     text: "You enter the store."
   },
@@ -89,7 +92,6 @@ const locations = [
     text: "You find a secret game. Pick a number above. Ten numbers will be randomly chosen between 0 and 10. If the number you choose matches one of the random numbers, you win!"
   }
 ];
-
 // initialize buttons
 button1.onclick = goStore;
 button2.onclick = goCave;
@@ -112,6 +114,7 @@ function goTown() {
 
 function goStore() {
   update(locations[1]);
+  button2.innerText = buyWeaponText;
 }
 
 function goCave() {
@@ -131,9 +134,12 @@ function buyHealth() {
 
 function buyWeapon() {
   if (currentWeapon < weapons.length - 1) {
-    if (gold >= 30) {
-      gold -= 30;
+    if (gold >= weaponCost) {
+      gold -= weaponCost;
+      weaponCost = Math.floor(weaponCost * 1.5);
       currentWeapon++;
+      buyWeaponText = "Buy a " + weapons[currentWeapon + 1].name + " (" + weaponCost + " gold)";
+      button2.innerText = buyWeaponText;
       goldText.innerText = gold;
       let newWeapon = weapons[currentWeapon].name;
       text.innerText = "You now have a " + newWeapon + ".";
