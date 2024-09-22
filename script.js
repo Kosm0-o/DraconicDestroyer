@@ -6,6 +6,9 @@ let fighting;
 let monsterHealth;
 let inventory = ["stick"];
 let weaponCost = 30;
+let healthCost = 10;
+let weaponBreakCount = 1;
+let level = 1;
 
 const button1 = document.querySelector('#button1');
 const button2 = document.querySelector("#button2");
@@ -28,26 +31,41 @@ const weapons = [
 ];
 const monsters = [
   {
-    name: "slime",
+    name: "Slime",
     level: 2,
     health: 15
   },
   {
-    name: "fanged beast",
+    name: "Fanged Beast",
     level: 8,
     health: 60
   },
   {
-    name: "dragon",
+    name: "Dragon",
     level: 20,
     health: 300
+  },
+  {
+    name: "Rock Mantis",
+    level: 25,
+    health: 450
+  },
+  {
+    name: "Soul Demon",
+    level: 32,
+    health: 1000
+  },
+  {
+    name: "Dragon Hatchling Army",
+    level: 50,
+    health: 2500
   }
 ]
 let buyWeaponText = "Buy a " + weapons[currentWeapon + 1].name + " (" + weaponCost + " gold)";
 const locations = [
   {
     name: "town square",
-    "button text": ["Go to store", "Go to cave", "Fight dragon"],
+    "button text": ["Go to local shop", "Go to chilly cave", "Fight dragon"],
     "button functions": [goStore, goCave, fightDragon],
     text: "You are in the town square. You see a sign that says \"Store\"."
   },
@@ -66,7 +84,7 @@ const locations = [
   {
     name: "fight",
     "button text": ["Attack", "Dodge", "Run"],
-    "button functions": [attack, dodge, goTown],
+    "button functions": [attack, dodge, goCheckHome],
     text: "You are fighting a monster."
   },
   {
@@ -85,13 +103,43 @@ const locations = [
     name: "win", 
     "button text": ["REPLAY?", "REPLAY?", "REPLAY?"], 
     "button functions": [restart, restart, restart], 
-    text: "You defeat the dragon! YOU WIN THE GAME! &#x1F389;" 
+    text: "You defeat the dragon's hatchling army! YOU WIN THE GAME! &#x1F389;" 
   },
   {
     name: "easter egg",
     "button text": ["2", "8", "Go to town square?"],
     "button functions": [pickTwo, pickEight, goTown],
     text: "You find a secret game. Pick a number above. Ten numbers will be randomly chosen between 0 and 10. If the number you choose matches one of the random numbers, you win!"
+  },
+  {
+    name: "Level 2 Intermission",
+    "button text": ["Continue?", "Continue?", "Continue?"],
+    "button functions": [continuePlay, continuePlay, continuePlay],
+    text: "You slay the dragon and bathe in the gold riches of her treasury. But then you hear a growl behind you. It turns out that the dragon had laid eggs and they have now hatched. You run away."
+  },
+  {
+    name: "Level 2",
+    "button text": ["Visit Merchant", "Go to Coal Cavern", "Fight Hatchling Army"],
+    "button functions": [goMerchant, goCavern, fightHatchlings],
+    text: "You are back where you started: the entrance to the chilly cave."
+  },
+  {
+    name: "merchant",
+    "button text": ["Buy 25 health (25 gold)", buyWeaponText, "Go to cave entrance"],
+    "button functions": [buyHealth, buyWeapon, goEntrance],
+    text: "You go to the merchant's stand."
+  },
+  {
+    name: "cavern",
+    "button text": ["Fight Rock Mantis", "Fight Soul Demons", "Go to cave entrance"],
+    "button functions": [fightMantis, fightDemon, goEntrance],
+    text: "You go to a deeper part of the chilly cave, named \"The Coal Cavern\""
+  },
+  {
+    name: "killmonster2",
+    "button text": ["Go to cave entrance", "Go to cave entrance", "Go to cave entrance"],
+    "button functions": [goEntrance, goEntrance, goEntrance],
+    text: "The monster screams \"Arg!\" as it dies. You gain experience points and find gold."
   }
 ];
 // initialize buttons
@@ -114,8 +162,17 @@ function goTown() {
   update(locations[0]);
 }
 
+function goEntrance() {
+  update(locations[9]);
+}
+
 function goStore() {
   update(locations[1]);
+  button2.innerText = buyWeaponText;
+}
+
+function goMerchant() {
+  update(locations[10]);
   button2.innerText = buyWeaponText;
 }
 
@@ -123,10 +180,22 @@ function goCave() {
   update(locations[2]);
 }
 
+function goCavern() {
+  update(locations[11]);
+}
+
+function goCheckHome() {
+  if (level === 1) {
+    goTown();
+  } else if (level === 2) {
+    goEntrance();
+  }
+}
+
 function buyHealth() {
-  if (gold >= 10) {
-    gold -= 10;
-    health += 10;
+  if (gold >= healthCost) {
+    gold -= healthCost;
+    health += healthCost;
     goldText.innerText = gold;
     healthText.innerText = health;
   } else {
@@ -139,7 +208,7 @@ function buyWeapon() {
     if (gold >= weaponCost) {
       gold -= weaponCost;
       weaponCost = Math.floor(weaponCost * 1.5);
-      currentWeapon++;
+      currentWeapon += weaponBreakCount;
       currentWeaponText.innerText = weapons[currentWeapon].name;
       buyWeaponText = "Buy a " + weapons[currentWeapon + 1].name + " (" + weaponCost + " gold)";
       button2.innerText = buyWeaponText;
@@ -186,6 +255,21 @@ function fightDragon() {
   goFight();
 }
 
+function fightMantis() {
+  fighting = 3;
+  goFight();
+}
+
+function fightDemon() {
+  fighting = 4;
+  goFight();
+}
+
+function fightHatchlings() {
+  fighting = 5;
+  goFight();
+}
+
 function goFight() {
   update(locations[3]);
   monsterHealth = monsters[fighting].health;
@@ -209,14 +293,19 @@ function attack() {
     lose();
   } else if (monsterHealth <= 0) {
     if (fighting === 2) {
+      levelIntermission();
+    } else if (fighting === 5){
       winGame();
-    } else {
+    }
+    else {
       defeatMonster();
     }
   }
   if (Math.random() <= .1 && inventory.length !== 1) {
     text.innerText += " Your " + inventory.pop() + " breaks.";
     currentWeapon--;
+    weaponCost /= 1.5;
+    weaponBreakCount ++;
   }
 }
 
@@ -239,7 +328,22 @@ function defeatMonster() {
   xp += monsters[fighting].level;
   goldText.innerText = gold;
   xpText.innerText = xp;
+  if (level === 1) {
   update(locations[4]);
+  } else if (level === 2) {
+    update(locations[12]);
+  }
+}
+
+function levelIntermission() {
+  update(locations[8]);
+  level ++;
+}
+
+function continuePlay() {
+  update(locations[9]);
+  text.innerText = "A few days later, you come back to the chilly cave, and the hatchlings screech, causing for rocks and stalactites to come falling down. With the entrance closed off, you're now trapped in the cave with a merchant, more monsters, and the hatchlings.";
+  healthCost += 15;
 }
 
 function lose() {
@@ -254,6 +358,7 @@ function restart() {
   xp = 0;
   health = 100;
   gold = 50;
+  weaponCost = 30;
   currentWeapon = 0;
   inventory = ["stick"];
   goldText.innerText = gold;
