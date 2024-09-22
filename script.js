@@ -8,7 +8,7 @@ let inventory = ["stick"];
 let weaponCost = 30;
 let healthCost = 10;
 let weaponBreakCount = 1;
-let level = 1;
+let gameLevel = 1;
 
 const button1 = document.querySelector('#button1');
 const button2 = document.querySelector("#button2");
@@ -24,10 +24,13 @@ const monsterHealthText = document.querySelector("#monsterHealth");
 const weapons = [
   { name: 'Stick', power: 5 },
   { name: 'Dagger', power: 30 },
-  { name: 'Claw Hammer', power: 50 },
+  { name: 'Steel Hammer', power: 50 },
   { name: 'Sword', power: 100 },
   { name: "Jelly Whip", power: 150},
-  { name: 'Tooth Hook', power: 250}
+  { name: 'Tooth Hook', power: 250},
+  { name: "Claw-mahawk", power: 500},
+  { name: "Holy Kunai", power: 650},
+  { name: "Gut-Knock Trident", power: 800}
 ];
 const monsters = [
   {
@@ -185,9 +188,9 @@ function goCavern() {
 }
 
 function goCheckHome() {
-  if (level === 1) {
+  if (gameLevel === 1) {
     goTown();
-  } else if (level === 2) {
+  } else if (gameLevel === 2) {
     goEntrance();
   }
 }
@@ -310,7 +313,7 @@ function attack() {
 }
 
 function getMonsterAttackValue(level) {
-  const hit = (level * 5) - (Math.floor(Math.random() * xp));
+  const hit = (Math.floor((level * 5) + (Math.random() * 100))) - (Math.floor(Math.random() * xp));
   console.log(hit);
   return hit > 0 ? hit : 0;
 }
@@ -328,16 +331,16 @@ function defeatMonster() {
   xp += monsters[fighting].level;
   goldText.innerText = gold;
   xpText.innerText = xp;
-  if (level === 1) {
+  if (gameLevel === 1) {
   update(locations[4]);
-  } else if (level === 2) {
+  } else if (gameLevel === 2) {
     update(locations[12]);
   }
 }
 
 function levelIntermission() {
   update(locations[8]);
-  level ++;
+  gameLevel ++;
 }
 
 function continuePlay() {
