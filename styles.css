@@ -42,7 +42,12 @@ body {
   
   .stat {
     padding-right: 10px;
+    font-size: 175%;
   }
+
+    #stats {
+        text-align: center;
+    }
   
   #controls {
     display: flex;
