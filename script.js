@@ -1,6 +1,6 @@
 let xp = 0;
 let health = 100;
-let gold = 50;
+let gold = 5000;
 let currentWeapon = 0;
 let fighting;
 let monsterHealth;
@@ -14,15 +14,17 @@ const text = document.querySelector("#text");
 const xpText = document.querySelector("#xpText");
 const healthText = document.querySelector("#healthText");
 const goldText = document.querySelector("#goldText");
+const currentWeaponText = document.querySelector("#currentWeaponText");
 const monsterStats = document.querySelector("#monsterStats");
 const monsterName = document.querySelector("#monsterName");
 const monsterHealthText = document.querySelector("#monsterHealth");
 const weapons = [
-  { name: 'stick', power: 5 },
-  { name: 'dagger', power: 30 },
-  { name: 'claw hammer', power: 50 },
-  { name: 'sword', power: 100 },
-  { name: 'fang chain', power: 150}
+  { name: 'Stick', power: 5 },
+  { name: 'Dagger', power: 30 },
+  { name: 'Claw Hammer', power: 50 },
+  { name: 'Sword', power: 100 },
+  { name: "Jelly Whip", power: 150},
+  { name: 'Tooth Hook', power: 250}
 ];
 const monsters = [
   {
@@ -133,24 +135,26 @@ function buyHealth() {
 }
 
 function buyWeapon() {
-  if (currentWeapon < weapons.length - 1) {
+  if (currentWeapon + 1 < weapons.length) {
     if (gold >= weaponCost) {
       gold -= weaponCost;
       weaponCost = Math.floor(weaponCost * 1.5);
       currentWeapon++;
+      currentWeaponText.innerText = weapons[currentWeapon].name;
       buyWeaponText = "Buy a " + weapons[currentWeapon + 1].name + " (" + weaponCost + " gold)";
       button2.innerText = buyWeaponText;
       goldText.innerText = gold;
       let newWeapon = weapons[currentWeapon].name;
       text.innerText = "You now have a " + newWeapon + ".";
       inventory.push(newWeapon);
-      text.innerText += " In your inventory you have: " + inventory;
+      text.innerText += " In your inventory you have: " + inventory;  
     } else {
       text.innerText = "You do not have enough gold to buy a weapon.";
     }
   } else {
-    text.innerText = "You already have the most powerful weapon!";
-    button2.innerText = "Sell weapon for 15 gold";
+    text.innerText = "You already have a " + weapons[currentWeapon].name + "!";
+    buyWeaponText = "Sell weapon for 15 gold";
+    button2.innerText = buyWeaponText;
     button2.onclick = sellWeapon;
   }
 }
@@ -255,6 +259,7 @@ function restart() {
   goldText.innerText = gold;
   healthText.innerText = health;
   xpText.innerText = xp;
+  buyWeaponText = "Buy a " + weapons[currentWeapon + 1].name + " (" + weaponCost + " gold)";
   goTown();
 }
 
