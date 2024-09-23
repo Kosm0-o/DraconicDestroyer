@@ -362,6 +362,7 @@ function restart() {
   gold = 50;
   weaponCost = 30;
   currentWeapon = 0;
+  gameLevel = 1;
   inventory = ["stick"];
   goldText.innerText = gold;
   healthText.innerText = health;
