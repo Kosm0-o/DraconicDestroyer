@@ -306,6 +306,7 @@ function attack() {
   if (Math.random() <= .1 && inventory.length !== 1) {
     text.innerText += " Your " + inventory.pop() + " breaks.";
     currentWeapon--;
+    currentWeaponText.innerText = currentWeapon;
     weaponCost = Math.floor(weaponCost / 1.5);
   }
 }
