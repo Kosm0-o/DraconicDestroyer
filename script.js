@@ -7,7 +7,6 @@ let monsterHealth;
 let inventory = ["stick"];
 let weaponCost = 30;
 let healthCost = 10;
-let weaponBreakCount = 1;
 let gameLevel = 1;
 
 const button1 = document.querySelector('#button1');
@@ -211,7 +210,7 @@ function buyWeapon() {
     if (gold >= weaponCost) {
       gold -= weaponCost;
       weaponCost = Math.floor(weaponCost * 1.5);
-      currentWeapon += weaponBreakCount;
+      currentWeapon ++;
       currentWeaponText.innerText = weapons[currentWeapon].name;
       buyWeaponText = "Buy a " + weapons[currentWeapon + 1].name + " (" + weaponCost + " gold)";
       button2.innerText = buyWeaponText;
@@ -307,8 +306,7 @@ function attack() {
   if (Math.random() <= .1 && inventory.length !== 1) {
     text.innerText += " Your " + inventory.pop() + " breaks.";
     currentWeapon--;
-    weaponCost /= 1.5;
-    weaponBreakCount ++;
+    weaponCost = Math.floor(weaponCost / 1.5);
   }
 }
 
@@ -367,6 +365,7 @@ function restart() {
   goldText.innerText = gold;
   healthText.innerText = health;
   xpText.innerText = xp;
+  currentWeaponText.innerText = "Stick";
   buyWeaponText = "Buy a " + weapons[currentWeapon + 1].name + " (" + weaponCost + " gold)";
   goTown();
 }
