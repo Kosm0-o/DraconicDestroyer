@@ -363,12 +363,13 @@ function restart() {
   weaponCost = 30;
   currentWeapon = 0;
   gameLevel = 1;
+  healthCost -= 15;
   inventory = ["stick"];
   goldText.innerText = gold;
   healthText.innerText = health;
   xpText.innerText = xp;
   currentWeaponText.innerText = "Stick";
-  buyWeaponText = "Buy a " + weapons[currentWeapon + 1].name + " (" + weaponCost + " gold)";
+  buyWeaponText = "Buy a " + weapons[currentWeapon + 1].name + " (" + weaponCost + " gold)"; 
   goTown();
 }
 
